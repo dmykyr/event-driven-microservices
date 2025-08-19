@@ -16,3 +16,12 @@ services:
       retries: 3
       start_period: 10s
     restart: unless-stopped
+
+  publisher:
+    image: andriiuni/events
+    environment:
+      - EVENT_ENDPOINT=http://gateway:3000/webhooks
+    depends_on:
+      gateway:
+        condition: service_healthy
+    restart: unless-stopped
