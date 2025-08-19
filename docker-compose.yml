@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  gateway:
+    build:
+      context: ./services/gateway
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  publisher:
+    image: andriiuni/events
+    environment:
+      - EVENT_ENDPOINT=http://gateway:3000/webhooks
+    depends_on:
+      gateway:
+        condition: service_healthy
+    restart: unless-stopped

@@ -1,0 +1,33 @@
+name: Run tests
+
+on:
+  pull_request:
+    branches: [ main, dev ]
+    paths:
+      - 'services/gateway/**'
+  push:
+    branches: [ main, dev ]
+    paths:
+      - 'services/gateway/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: 'services/gateway/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: ./services/gateway
+        run: npm ci
+
+      - name: Run tests
+        working-directory: ./services/gateway
+        run: npm run test
