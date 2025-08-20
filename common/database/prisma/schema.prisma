@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model FacebookEvent {
+  id          String            @id
+  timestamp   DateTime
+  funnelStage FunnelStage       @map("funnel_stage")
+  eventType   FacebookEventType @map("event_type")
+
+  userId      String @map("user_id")
+  userName    String @map("user_name")
+  userAge     Int    @map("user_age")
+  userGender  Gender @map("user_gender")
+  userCountry String @map("user_country")
+  userCity    String @map("user_city")
+
+  actionTime DateTime @map("action_time")
+  referrer   Referrer @map("referrer")
+  videoId    String?  @map("video_id")
+
+  adId           String         @map("ad_id")
+  campaignId     String         @map("campaign_id")
+  clickPosition  ClickPosition  @map("click_position")
+  device         FacebookDevice
+  browser        Browser
+  purchaseAmount Decimal?       @map("purchase_amount")
+
+  @@index([timestamp])
+  @@index([eventType])
+  @@index([campaignId])
+  @@index([userCountry])
+  @@index([userAge])
+  @@index([funnelStage])
+  @@map("facebook_events")
+}
+
+enum FunnelStage {
+  top
+  bottom
+
+  @@map("funnel_stage")
+}
+
+enum FacebookEventType {
+  adView           @map("ad_view")
+  pageLike         @map("page_like")
+  comment
+  videoView        @map("video_view")
+  adClick          @map("ad_click")
+  formSubmission   @map("form_submission")
+  checkoutComplete @map("checkout_complete")
+
+  @@map("facebook_event_type")
+}
+
+enum Gender {
+  male
+  female
+  nonBinary @map("non_binary")
+
+  @@map("gender")
+}
+
+enum Referrer {
+  newsfeed
+  marketplace
+  groups
+
+  @@map("referrer")
+}
+
+enum ClickPosition {
+  topLeft     @map("top_left")
+  bottomRight @map("bottom_right")
+  center
+
+  @@map("click_position")
+}
+
+enum FacebookDevice {
+  mobile
+  desktop
+
+  @@map("facebook_device")
+}
+
+enum Browser {
+  chrome
+  firefox
+  safari
+
+  @@map("browser")
+}
