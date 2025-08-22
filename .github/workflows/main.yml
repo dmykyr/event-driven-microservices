@@ -5,13 +5,15 @@ on:
     branches: [ main, dev ]
     paths:
       - 'services/gateway/**'
+      - 'services/facebook-collector/**'
   push:
     branches: [ main, dev ]
     paths:
       - 'services/gateway/**'
+      - 'services/facebook-collector/**'
 
 jobs:
-  test:
+  test-gateway:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,4 +32,32 @@ jobs:
 
       - name: Run tests
         working-directory: ./services/gateway
+        run: npm run test
+
+  test-facebook-collector:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        working-directory: ./common/database
+        run: npx prisma generate
+
+      - name: Build common database package
+        working-directory: ./common/database
+        run: npm run build
+
+      - name: Run facebook-collector tests
+        working-directory: ./services/facebook-collector
         run: npm run test

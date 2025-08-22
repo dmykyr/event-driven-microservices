@@ -1,27 +1,83 @@
 version: '3.8'
 
 services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  db-migration:
+    build:
+      context: ./common/database
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  fb-collector:
+    build:
+      context: .
+      dockerfile: services/facebook-collector/Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+      db-migration:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3002/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+
   gateway:
     build:
       context: ./services/gateway
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
-      - PORT=3000
+      - PORT=3001
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 10s
+    depends_on:
+      fb-collector:
+        condition: service_healthy
     restart: unless-stopped
 
   publisher:
     image: andriiuni/events
     environment:
-      - EVENT_ENDPOINT=http://gateway:3000/webhooks
+      - EVENT_ENDPOINT=http://gateway:3001/webhooks
     depends_on:
       gateway:
         condition: service_healthy
     restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local

@@ -1,0 +1,26 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+COPY common/ ./common/
+COPY services/facebook-collector/package*.json ./services/facebook-collector/
+
+RUN npm ci
+
+WORKDIR /app/common/database
+RUN npx prisma generate
+
+WORKDIR /app
+COPY services/facebook-collector/ ./services/facebook-collector/
+
+WORKDIR /app/services/facebook-collector
+
+COPY services/facebook-collector/.env .env
+
+RUN npm run build
+
+RUN apk add --no-cache curl
+
+CMD ["npm", "run", "start:prod"]
