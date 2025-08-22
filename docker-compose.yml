@@ -18,6 +18,23 @@ services:
       retries: 5
     restart: unless-stopped
 
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222"
+      - "6222:6222"
+      - "8222:8222"
+    volumes:
+      - ./nats.conf:/etc/nats/nats.conf
+      - nats_data:/data
+    command: [ "--config", "/etc/nats/nats.conf" ]
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8222/varz" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
   db-migration:
     build:
       context: ./common/database
@@ -37,6 +54,7 @@ services:
     environment:
       - PORT=3002
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
+      - NATS_SERVERS=nats://nats:4222
     depends_on:
       postgres:
         condition: service_healthy
@@ -58,6 +76,7 @@ services:
       - "3001:3001"
     environment:
       - PORT=3001
+      - NATS_SERVERS=nats://nats:4222
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
       interval: 10s
@@ -80,4 +99,6 @@ services:
 
 volumes:
   postgres_data:
+    driver: local
+  nats_data:
     driver: local

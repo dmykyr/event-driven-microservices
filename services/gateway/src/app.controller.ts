@@ -1,9 +1,13 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AppService } from './app.service';
+import { NatsService } from './nats/nats.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+      private readonly appService: AppService,
+      private readonly natsService: NatsService,
+  ) {}
 
   @Get('health')
   getHealth() {
@@ -11,10 +15,12 @@ export class AppController {
   }
 
   @Post('webhooks')
-  handleWebhook(@Body() payload: Event) {
-    console.log('Webhook received:');
-    console.log('Payload:', JSON.stringify(payload, null, 2));
-    console.log('-------------------');
+  async handleWebhook (@Body() body: any) {
+    try {
+      await this.natsService.publishFacebookEvent(body);
+    } catch (error) {
+      throw error;
+    }
 
     return {
       success: true,

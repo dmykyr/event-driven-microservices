@@ -6,6 +6,7 @@ import { FacebookEventController } from './facebookEvent.controller';
 @Module({
   imports: [DatabaseModule],
   providers: [FacebookEventService],
-  controllers: [FacebookEventController]
+  controllers: [FacebookEventController],
+  exports: [FacebookEventService]
 })
 export class FacebookEventModule {}
