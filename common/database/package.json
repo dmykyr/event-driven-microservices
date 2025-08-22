@@ -6,6 +6,7 @@
   "types": "dist/index.d.ts",
   "files": ["dist", "prisma"],
   "scripts": {
+    "build": "tsc",
     "generate": "prisma generate",
     "migrate": "prisma migrate deploy"
   },

@@ -45,12 +45,19 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: 'services/facebook-collector/package-lock.json'
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        working-directory: ./services/facebook-collector
         run: npm ci
 
-      - name: Run tests
+      - name: Generate Prisma client
+        working-directory: ./common/database
+        run: npx prisma generate
+
+      - name: Build common database package
+        working-directory: ./common/database
+        run: npm run build
+
+      - name: Run facebook-collector tests
         working-directory: ./services/facebook-collector
         run: npm run test
