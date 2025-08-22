@@ -21,16 +21,16 @@ model FacebookEvent {
   userCountry String @map("user_country")
   userCity    String @map("user_city")
 
-  actionTime DateTime @map("action_time")
-  referrer   Referrer @map("referrer")
-  videoId    String?  @map("video_id")
+  actionTime DateTime? @map("action_time")
+  referrer   Referrer? @map("referrer")
+  videoId    String?   @map("video_id")
 
-  adId           String         @map("ad_id")
-  campaignId     String         @map("campaign_id")
-  clickPosition  ClickPosition  @map("click_position")
-  device         FacebookDevice
-  browser        Browser
-  purchaseAmount Decimal?       @map("purchase_amount")
+  adId           String?         @map("ad_id")
+  campaignId     String?         @map("campaign_id")
+  clickPosition  ClickPosition?  @map("click_position")
+  device         FacebookDevice?
+  browser        Browser?
+  purchaseAmount Decimal?        @map("purchase_amount")
 
   @@index([timestamp])
   @@index([eventType])
