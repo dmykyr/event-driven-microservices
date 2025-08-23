@@ -10,6 +10,10 @@
     "build": "npm run build --workspaces",
     "test": "npm run test --workspaces",
     "dev:types": "npm run dev --workspace=@event-driven-microservices/types",
-    "build:types": "npm run build --workspace=@event-driven-microservices/types"
+    "build:types": "npm run build --workspace=@event-driven-microservices/types",
+    "start:reporter": "npm run start:dev --workspace=reporter",
+    "start:gateway": "npm run start:dev --workspace=gateway",
+    "start:fb-collector": "npm run start:dev --workspace=facebook-collector",
+    "start:ttk-collector": "npm run start:dev --workspace=tiktok-collector"
   }
 }

@@ -20,4 +20,5 @@ export {
 } from './events/dto/tiktokEvent.dto';
 
 export { EventsDtoSchema } from './events/schemas/event.schema'
-export { FacebookEventDtoSchema } from './events/schemas/facebookEvent.schema';
+export { FacebookEventDtoSchema, FacebookBottomEventTypeSchema, FacebookTopEventTypeSchema } from './events/schemas/facebookEvent.schema';
+export { TiktokBottomEventTypeSchema, TiktokTopEventTypeSchema } from './events/schemas/tiktokEvent.schema';
