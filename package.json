@@ -14,6 +14,11 @@
     "start:reporter": "npm run start:dev --workspace=reporter",
     "start:gateway": "npm run start:dev --workspace=gateway",
     "start:fb-collector": "npm run start:dev --workspace=facebook-collector",
-    "start:ttk-collector": "npm run start:dev --workspace=tiktok-collector"
+    "start:ttk-collector": "npm run start:dev --workspace=tiktok-collector",
+    "start:all": "concurrently \"npm run start:gateway\" \"npm run start:reporter\" \"npm run start:fb-collector\" \"npm run start:ttk-collector\" --names \"GATEWAY,REPORTER,FB-COLLECTOR,TT-COLLECTOR\"",
+    "dev:all": "npm run start:all"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
 }
