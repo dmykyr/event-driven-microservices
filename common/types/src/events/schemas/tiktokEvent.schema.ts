@@ -13,6 +13,11 @@ export const TiktokBottomEventTypeSchema = z.enum([
   'follow'
 ]);
 
+export const TiktokEventTypeSchema = z.union([
+  TiktokTopEventTypeSchema,
+  TiktokBottomEventTypeSchema
+]);
+
 export const TiktokUserSchema = z.object({
   userId: z.string().min(1, 'userId is required'),
   username: z.string().min(1, 'username is required'),

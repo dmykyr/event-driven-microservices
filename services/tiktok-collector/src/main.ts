@@ -7,6 +7,6 @@ async function bootstrap() {
   const port = process.env.PORT ?? 3002;
   await app.listen(port);
 
-  console.info(`Started facebook collector on ${port} port`);
+  console.info(`Started tiktok collector on ${port} port`);
 }
 bootstrap();

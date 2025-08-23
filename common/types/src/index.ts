@@ -4,8 +4,20 @@ export {
   FacebookEngagementTopDto,
   FacebookEventDto,
   FacebookEventTypeDto,
-  FunnelStageDto
+  FunnelStageDto,
+  BrowserDto,
+  ClickPositionDto,
+  GenderDto,
+  ReferrerDto,
 } from './events/dto/facebookEvent.dto';
+
+export {
+  TiktokEngagementBottomDto,
+  TiktokEngagementTopDto,
+  TiktokEventDto,
+  TiktokEventTypeDto,
+  TiktokDeviceDto,
+} from './events/dto/tiktokEvent.dto';
 
 export { EventsDtoSchema } from './events/schemas/event.schema'
 export { FacebookEventDtoSchema } from './events/schemas/facebookEvent.schema';
