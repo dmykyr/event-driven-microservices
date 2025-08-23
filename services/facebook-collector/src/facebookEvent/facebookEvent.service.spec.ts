@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FacebookEventService } from './facebookEvent.service';
 import { DatabaseService } from '../database/database.service';
 import { FacebookEventMapper } from './facebookEvent.mapper';
-import { FacebookEventDto } from '../dto/facebookEvent.dto';
+import { FacebookEventDto } from '@event-driven-microservices/types';
 import { FacebookEvent } from '@event-driven-microservices/database';
 
 jest.mock('./facebookEvent.mapper');
