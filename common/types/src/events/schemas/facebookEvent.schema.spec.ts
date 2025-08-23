@@ -5,7 +5,7 @@ import {
   FacebookEventDtoSchema,
   FacebookTopEventTypeSchema,
   FacebookUserSchema
-} from './facebookEvent.dto';
+} from './facebookEvent.schema';
 
 describe('FacebookEventDto Schema', () => {
   describe('FacebookTopEventTypeSchema', () => {

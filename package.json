@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "common/database",
+    "common/*",
     "services/*"
-  ]
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "dev:types": "npm run dev --workspace=@event-driven-microservices/types",
+    "build:types": "npm run build --workspace=@event-driven-microservices/types"
+  }
 }

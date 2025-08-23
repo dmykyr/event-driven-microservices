@@ -6,7 +6,7 @@ import {
   FacebookEventDto,
   FacebookEventTypeDto,
   FunnelStageDto
-} from '../dto/facebookEvent.dto';
+} from '@event-driven-microservices/types';
 
 export class FacebookEventMapper {
   static toEntity(event: FacebookEventDto): FacebookEvent {

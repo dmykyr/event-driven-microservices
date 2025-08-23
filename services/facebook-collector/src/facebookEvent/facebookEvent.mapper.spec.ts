@@ -1,5 +1,5 @@
 import { FacebookEventMapper } from './facebookEvent.mapper';
-import { FacebookEventDto } from '../dto/facebookEvent.dto';
+import { FacebookEventDto } from '@event-driven-microservices/types';
 import { Prisma } from '@event-driven-microservices/database';
 
 describe('FacebookEventMapper', () => {

@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import z from 'zod'
 export const FacebookTopEventTypeSchema = z.enum([
   'ad.view',
   'page.like',
@@ -21,8 +20,8 @@ export const FacebookEventTypeSchema = z.union([
 export const GenderSchema = z.enum(['male', 'female', 'non-binary']);
 
 export const FacebookUserLocationSchema = z.object({
-  country: z.string().min(1, 'Country is required'),
-  city: z.string().min(1, 'City is required')
+  country: z.string().min(1, 'country is required'),
+  city: z.string().min(1, 'city is required')
 });
 
 export const FacebookUserSchema = z.object({
@@ -39,7 +38,7 @@ export const DeviceSchema = z.enum(['mobile', 'desktop']);
 export const BrowserSchema = z.enum(['Chrome', 'Firefox', 'Safari']);
 
 export const FacebookEngagementTopSchema = z.object({
-  actionTime: z.string().datetime('Invalid datetime format'),
+  actionTime: z.string().datetime('wrong datetime format'),
   referrer: ReferrerSchema,
   videoId: z.string().nullable()
 });
@@ -52,7 +51,7 @@ export const FacebookEngagementBottomSchema = z.object({
   browser: BrowserSchema,
   purchaseAmount: z.string().nullable().refine(
       (val) => val === null || !isNaN(parseFloat(val)),
-      'Purchase amount must be a valid number'
+      'purchase amount must be a valid number'
   )
 });
 
@@ -61,7 +60,7 @@ export const FunnelStageSchema = z.enum(['top', 'bottom']);
 export const FacebookEventDtoSchema = z.discriminatedUnion('funnelStage', [
   z.object({
     eventId: z.string().min(1, 'eventId is required'),
-    timestamp: z.string().datetime('Invalid timestamp format'),
+    timestamp: z.iso.datetime('wrong timestamp format'),
     source: z.literal('facebook'),
     funnelStage: z.literal('top'),
     eventType: FacebookTopEventTypeSchema,
@@ -72,7 +71,7 @@ export const FacebookEventDtoSchema = z.discriminatedUnion('funnelStage', [
   }),
   z.object({
     eventId: z.string().min(1, 'eventId is required'),
-    timestamp: z.string().datetime('Invalid timestamp format'),
+    timestamp: z.iso.datetime('wrong timestamp format'),
     source: z.literal('facebook'),
     funnelStage: z.literal('bottom'),
     eventType: FacebookBottomEventTypeSchema,
@@ -85,7 +84,7 @@ export const FacebookEventDtoSchema = z.discriminatedUnion('funnelStage', [
 
 
 export type FacebookEventTypeDto = z.infer<typeof FacebookEventTypeSchema>;
-export type FacebookEventDto = z.infer<typeof FacebookEventDtoSchema>;
+export type FacebookEventSchema = z.infer<typeof FacebookEventDtoSchema>;
 export type FunnelStageDto = z.infer<typeof FunnelStageSchema>;
 export type FacebookEngagementTopDto = z.infer<typeof FacebookEngagementTopSchema>;
 export type FacebookEngagementBottom = z.infer<typeof FacebookEngagementBottomSchema>;
