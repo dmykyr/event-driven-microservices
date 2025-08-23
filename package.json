@@ -15,6 +15,8 @@
     "start:gateway": "npm run start:dev --workspace=gateway",
     "start:fb-collector": "npm run start:dev --workspace=facebook-collector",
     "start:ttk-collector": "npm run start:dev --workspace=tiktok-collector",
+    "build:logger": "npm run build --workspace=@event-driven-microservices/logger",
+    "dev:logger": "npm run dev --workspace=@event-driven-microservices/logger",
     "start:all": "concurrently \"npm run start:gateway\" \"npm run start:reporter\" \"npm run start:fb-collector\" \"npm run start:ttk-collector\" --names \"GATEWAY,REPORTER,FB-COLLECTOR,TT-COLLECTOR\"",
     "dev:all": "npm run start:all"
   },

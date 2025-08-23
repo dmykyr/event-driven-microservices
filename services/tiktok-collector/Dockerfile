@@ -15,6 +15,9 @@ RUN npx prisma generate
 WORKDIR /app/common/types
 RUN npm run build
 
+WORKDIR /app/common/logger
+RUN npm run build
+
 WORKDIR /app
 COPY services/tiktok-collector/ ./services/tiktok-collector/
 

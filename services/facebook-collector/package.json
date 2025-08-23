@@ -22,6 +22,7 @@
   "dependencies": {
     "@event-driven-microservices/database": "*",
     "@event-driven-microservices/types": "*",
+    "@event-driven-microservices/logger": "*",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^10.0.0",

@@ -1,5 +1,6 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { AckPolicy, connect, JetStreamClient, NatsConnection, RetentionPolicy } from 'nats';
+import { WinstonLoggerService } from '@event-driven-microservices/logger';
 
 @Injectable()
 export class NatsService implements OnModuleInit, OnModuleDestroy {
@@ -8,39 +9,41 @@ export class NatsService implements OnModuleInit, OnModuleDestroy {
   private activeProcessing = new Set<Promise<any>>();
   private isShuttingDown = false;
   private processingLoop: Promise<void> | null = null;
+  constructor(private readonly logger: WinstonLoggerService) {}
 
   async onModuleInit() {
     try {
       this.connection = await connect({
         servers: [process.env.NATS_SERVERS || 'nats://nats:4222'],
       });
-
       this.jetStream = this.connection.jetstream();
+      this.logger.log('NATS connection established successfully');
 
     } catch (error) {
+      this.logger.error('Failed to initialize NATS connection', error.stack);
       throw error;
     }
   }
 
   async onModuleDestroy() {
-    console.log('Starting graceful shutdown of message processor');
+    this.logger.log('Starting graceful shutdown of message processor');
 
     this.isShuttingDown = true;
 
     if (this.processingLoop) {
-      console.log('Waiting for processing loop to stop');
+      this.logger.log('Waiting for processing loop to stop');
       await this.processingLoop;
     }
 
     if (this.activeProcessing.size > 0) {
-      console.log(`Waiting for ${this.activeProcessing.size} active message processes to complete`);
+      this.logger.log(`Waiting for ${this.activeProcessing.size} active message processes to complete`);
       await Promise.allSettled(Array.from(this.activeProcessing));
-      console.log('All active message processing completed');
+      this.logger.log('All active message processing completed');
     }
 
     if (this.connection) {
       await this.connection.close();
-      console.log('NATS connection closed');
+      this.logger.log('NATS connection closed');
     }
   }
 
@@ -51,7 +54,7 @@ export class NatsService implements OnModuleInit, OnModuleDestroy {
       const streamName = 'FACEBOOK_EVENTS';
       try {
         await jsm.streams.info(streamName);
-        console.log(`Stream ${streamName} already exists`);
+        this.logger.log(`Stream ${streamName} already exists`);
       } catch (error) {
         if (error.code === '404') {
           await jsm.streams.add({
@@ -61,7 +64,7 @@ export class NatsService implements OnModuleInit, OnModuleDestroy {
             max_age: 24 * 60 * 60 * 1000_000_000,
             max_msgs: 10000,
           });
-          console.log(`Created stream ${streamName}`);
+          this.logger.log(`Created stream ${streamName}`);
         } else {
           throw error;
         }
@@ -88,7 +91,7 @@ export class NatsService implements OnModuleInit, OnModuleDestroy {
   }
 
   private async processMessages(consumer: any, handler: (data: any) => void): Promise<void> {
-    console.log('Starting message processing loop');
+    this.logger.log('Starting message processing loop');
 
     while (!this.isShuttingDown) {
       try {
@@ -122,7 +125,7 @@ export class NatsService implements OnModuleInit, OnModuleDestroy {
         }
 
         if (this.isShuttingDown) {
-          console.log('Processing stopped due to shutdown');
+          this.logger.log('Processing stopped due to shutdown');
           break;
         }
 
@@ -131,7 +134,7 @@ export class NatsService implements OnModuleInit, OnModuleDestroy {
       }
     }
 
-    console.log('Message processing loop stopped');
+    this.logger.log('Message processing loop stopped');
   }
 
   private async processMessage(msg: any, handler: (data: any) => void): Promise<void> {
@@ -139,7 +142,7 @@ export class NatsService implements OnModuleInit, OnModuleDestroy {
       const data = JSON.parse(msg.string());
       await handler(data);
       msg.ack();
-      console.log('Message processed and acknowledged');
+      this.logger.log('Message processed and acknowledged');
     } catch (error) {
       console.error('Error processing message:', error);
       msg.nak();

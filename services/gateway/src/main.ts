@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as express from 'express';
+import { WinstonLoggerService } from '@event-driven-microservices/logger';
 
 
 async function bootstrap() {
@@ -9,14 +10,17 @@ async function bootstrap() {
   app.enableShutdownHooks();
   app.use(express.json({ limit: '50mb' }));
 
+  const logger = app.get(WinstonLoggerService);
+  app.useLogger(logger);
+
   const gracefulShutdown = (signal: string) => {
-    console.log(`Received ${signal}, starting graceful shutdown`);
+    logger.log(`Received ${signal}, starting graceful shutdown`);
 
     app.close().then(() => {
-      console.log('Application closed successfully');
+      logger.log('Application closed successfully');
       process.exit(0);
     }).catch((error) => {
-      console.error('Error during shutdown:', error);
+      logger.error('Error during shutdown:', error);
       process.exit(1);
     });
   };
@@ -25,18 +29,18 @@ async function bootstrap() {
   process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 
   process.on('uncaughtException', (error) => {
-    console.error('Uncaught Exception:', error);
+    logger.error(`Uncaught Exception: ${error}`);
     gracefulShutdown('uncaughtException');
   });
 
   process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    logger.error(`Unhandled Rejection at: ${promise}, reason: ${reason}`);
     gracefulShutdown('unhandledRejection');
   });
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
 
-  console.info(`Started service on ${port} port`);
+  logger.log(`Started service on ${port} port`);
 }
 bootstrap();
