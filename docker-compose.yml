@@ -113,6 +113,26 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  reporter:
+    build:
+      context: .
+      dockerfile: services/reporter/Dockerfile
+    ports:
+      - "3004:3004"
+    environment:
+      - PORT=3004
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3004/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      gateway:
+        condition: service_healthy
+    restart: unless-stopped
+
   publisher:
     image: andriiuni/events
     environment:
