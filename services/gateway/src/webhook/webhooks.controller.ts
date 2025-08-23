@@ -1,5 +1,4 @@
 import { Body, Controller, Post, UsePipes } from '@nestjs/common';
-import { AppService } from '../app.service';
 import { NatsService } from '../nats/nats.service';
 import { ZodValidationPipe } from '../pipes/zodValidation.pipe';
 import { EventsDtoSchema, EventsDto } from '@event-driven-microservices/types'
@@ -7,7 +6,6 @@ import { EventsDtoSchema, EventsDto } from '@event-driven-microservices/types'
 @Controller('webhooks')
 export class WebhooksController {
   constructor(
-      private readonly appService: AppService,
       private readonly natsService: NatsService,
   ) {}
 
@@ -18,6 +16,8 @@ export class WebhooksController {
       for (const event of body) {
         if (event.source === 'facebook') {
           await this.natsService.publishFacebookEvent(event);
+        } else if (event.source === 'tiktok') {
+          await this.natsService.publishTiktokEvent(event);
         }
       }
     } catch (error) {

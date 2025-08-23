@@ -5,7 +5,10 @@ import {
   FacebookEngagementTopDto,
   FacebookEventDto,
   FacebookEventTypeDto,
-  FunnelStageDto
+  FunnelStageDto,
+  BrowserDto,
+  GenderDto,
+  ClickPositionDto,
 } from '@event-driven-microservices/types';
 
 export class FacebookEventMapper {
@@ -41,8 +44,8 @@ export class FacebookEventMapper {
     return eventTypeMap[eventType];
   }
 
-  private static mapGender(gender: "male" | "female" | "non-binary"): Gender {
-    const genderMap: Record<"male" | "female" | "non-binary", Gender> = {
+  private static mapGender(gender: GenderDto): Gender {
+    const genderMap: Record<GenderDto, Gender> = {
       'male': 'male',
       'female': 'female',
       'non-binary': 'nonBinary'
@@ -51,8 +54,8 @@ export class FacebookEventMapper {
     return genderMap[gender];
   }
 
-  private static mapClickPosition(position: "top_left" | "bottom_right" | "center"): ClickPosition {
-    const positionMap: Record<"top_left" | "bottom_right" | "center", ClickPosition> = {
+  private static mapClickPosition(position: ClickPositionDto): ClickPosition {
+    const positionMap: Record<ClickPositionDto, ClickPosition> = {
       'top_left': 'topLeft',
       'bottom_right': 'bottomRight',
       'center': 'center'
@@ -61,8 +64,8 @@ export class FacebookEventMapper {
     return positionMap[position];
   }
 
-  private static mapBrowser(browser: "Chrome" | "Firefox" | "Safari"): Browser {
-    const browserMap: Record<"Chrome" | "Firefox" | "Safari", Browser> = {
+  private static mapBrowser(browser: BrowserDto): Browser {
+    const browserMap: Record<BrowserDto, Browser> = {
       'Chrome': 'chrome',
       'Firefox': 'firefox',
       'Safari': 'safari'

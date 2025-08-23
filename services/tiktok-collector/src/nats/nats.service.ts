@@ -25,11 +25,11 @@ export class NatsService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  async subscribeFacebookEvents(handler: (data: any) => void): Promise<void> {
+  async subscribeTiktokEvents(handler: (data: any) => void): Promise<void> {
     try {
       const jsm = await this.connection.jetstreamManager();
 
-      const streamName = 'FACEBOOK_EVENTS';
+      const streamName = 'TIKTOK_EVENTS';
       try {
         await jsm.streams.info(streamName);
         console.log(`Stream ${streamName} already exists`);
@@ -37,7 +37,7 @@ export class NatsService implements OnModuleInit, OnModuleDestroy {
         if (error.code === '404') {
           await jsm.streams.add({
             name: streamName,
-            subjects: ['facebook.event'],
+            subjects: ['tiktok.event'],
             retention: RetentionPolicy.Workqueue,
             max_age: 24 * 60 * 60 * 1000_000_000,
             max_msgs: 10000,
@@ -48,18 +48,18 @@ export class NatsService implements OnModuleInit, OnModuleDestroy {
         }
       }
 
-      const consumerName = 'fb-collector';
+      const consumerName = 'tiktok-collector';
       try {
-        await jsm.consumers.info('FACEBOOK_EVENTS', consumerName);
+        await jsm.consumers.info('TIKTOK_EVENTS', consumerName);
       } catch (error) {
-        await jsm.consumers.add('FACEBOOK_EVENTS', {
+        await jsm.consumers.add('TIKTOK_EVENTS', {
           durable_name: consumerName,
           ack_policy: AckPolicy.Explicit,
           max_deliver: 3,
         });
       }
 
-      const consumer = await this.jetStream.consumers.get('FACEBOOK_EVENTS', consumerName);
+      const consumer = await this.jetStream.consumers.get('TIKTOK_EVENTS', consumerName);
       this.processMessages(consumer, handler);
 
     } catch (error) {

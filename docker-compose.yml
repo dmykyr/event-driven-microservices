@@ -68,6 +68,29 @@ services:
       start_period: 5s
     restart: unless-stopped
 
+  ttk-collector:
+    build:
+      context: .
+      dockerfile: services/tiktok-collector/Dockerfile
+    ports:
+      - "3003:3003"
+    environment:
+      - PORT=3003
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
+      - NATS_SERVERS=nats://nats:4222
+    depends_on:
+      postgres:
+        condition: service_healthy
+      db-migration:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3003/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+
   gateway:
     build:
       context: .
@@ -85,6 +108,8 @@ services:
       start_period: 10s
     depends_on:
       fb-collector:
+        condition: service_healthy
+      ttk-collector:
         condition: service_healthy
     restart: unless-stopped
 

@@ -49,18 +49,26 @@ ${nkey}
 
   async publishFacebookEvent(data: any): Promise<void> {
     const payload = JSON.stringify(data);
-    const sizeInBytes = Buffer.byteLength(payload, 'utf8');
-    const sizeInMB = (sizeInBytes / 1024 / 1024).toFixed(2);
-
-    console.log(`Publishing to JetStream: ${sizeInBytes} bytes (${sizeInMB} MB)`);
-
     try {
       const pubAck = await this.jetStream.publish('facebook.event', payload, {
         timeout: 15000,
       });
       console.log(`Event published successfully. Sequence: ${pubAck.seq}`);
     } catch (error) {
-      console.error(`Failed to publish event (${sizeInMB} MB):`, error.message);
+      console.error(`Failed to publish event`, error.message);
+      throw error;
+    }
+  }
+
+  async publishTiktokEvent(data: any): Promise<void> {
+    const payload = JSON.stringify(data);
+    try {
+      const pubAck = await this.jetStream.publish('tiktok.event', payload, {
+        timeout: 15000,
+      });
+      console.log(`Event published successfully. Sequence: ${pubAck.seq}`);
+    } catch (error) {
+      console.error(`Failed to publish event`, error.message);
       throw error;
     }
   }
