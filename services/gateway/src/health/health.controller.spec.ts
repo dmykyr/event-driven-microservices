@@ -1,22 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { WebhooksController } from '../webhook/webhooks.controller';
+import { AppService } from '../app.service';
+import { HealthController } from './health.controller';
 
-describe('AppController', () => {
-  let appController: AppController;
+describe('HealthController', () => {
+  let healthController: HealthController;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      controllers: [AppController],
+      controllers: [WebhooksController],
       providers: [AppService],
     }).compile();
 
-    appController = app.get<AppController>(AppController);
+    healthController = app.get<HealthController>(HealthController);
   });
 
   describe('health', () => {
     it('should return healthy result with correct structure', () => {
-      const result = appController.getHealth();
+      const result = healthController.checkHealth();
 
       expect(result).toHaveProperty('status', 'ok');
       expect(result).toHaveProperty('timestamp');
