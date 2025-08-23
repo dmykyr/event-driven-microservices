@@ -12,6 +12,9 @@ RUN npm ci
 WORKDIR /app/common/database
 RUN npx prisma generate
 
+WORKDIR /app/common/types
+RUN npm run build
+
 WORKDIR /app
 COPY services/facebook-collector/ ./services/facebook-collector/
 

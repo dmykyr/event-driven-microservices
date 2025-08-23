@@ -2,7 +2,7 @@ import { DatabaseService } from '../database/database.service';
 import { FacebookEventMapper } from './facebookEvent.mapper';
 import { FacebookEvent } from '@event-driven-microservices/database';
 import { Injectable } from '@nestjs/common';
-import { FacebookEventDto } from '../dto/facebookEvent.dto';
+import { FacebookEventDto } from '@event-driven-microservices/types';
 
 @Injectable()
 export class FacebookEventService {

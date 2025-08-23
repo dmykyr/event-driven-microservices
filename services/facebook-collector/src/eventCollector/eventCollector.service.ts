@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { FacebookEventService } from '../facebookEvent/facebookEvent.service';
 import { NatsService } from '../nats/nats.service';
-import { FacebookEventDto } from '../dto/facebookEvent.dto';
+import { FacebookEventDto } from '@event-driven-microservices/types';
 
 @Injectable()
 export class EventCollectorService implements OnModuleInit {
@@ -20,7 +20,7 @@ export class EventCollectorService implements OnModuleInit {
   async handleFacebookEvent(event: FacebookEventDto) {
     try {
       const createdEvent = await this.fbEventService.createEvent(event);
-      console.log('created event:', createdEvent);
+      console.log('created event:', createdEvent.id);
 
     } catch (error) {
       throw error;

@@ -1,23 +1,26 @@
 FROM node:18-alpine
 
-ARG PORT=3000
-
 WORKDIR /app
 
 COPY package*.json ./
 
+COPY common/types ./common/types
+COPY services/gateway/package*.json ./services/gateway/
+
 RUN npm ci
 
-COPY . .
-COPY .env .env
+WORKDIR /app/common/types
+RUN npm run build
+
+WORKDIR /app
+COPY services/gateway/ ./services/gateway/
+
+WORKDIR /app/services/gateway
+
+COPY services/gateway/.env .env
 
 RUN npm run build
 
 RUN apk add --no-cache curl
-
-EXPOSE ${PORT}
-
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:${PORT}/health || exit 1
 
 CMD ["npm", "run", "start:prod"]
