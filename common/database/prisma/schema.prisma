@@ -41,6 +41,35 @@ model FacebookEvent {
   @@map("facebook_events")
 }
 
+model TiktokEvent {
+  id          String          @id
+  timestamp   DateTime
+  funnelStage FunnelStage     @map("funnel_stage")
+  eventType   TiktokEventType @map("event_type")
+
+  userId    String @map("user_id")
+  username  String
+  followers Int
+
+  watchTime         Int?
+  percentageWatched Int?
+  device            TiktokDevice?
+  country           String?
+  videoId           String?
+
+  actionTime     DateTime? @map("action_time")
+  profileId      String?   @map("profile_id")
+  purchasedItem  String?   @map("purchased_item")
+  purchaseAmount Decimal?  @map("purchase_amount")
+
+  @@index([timestamp])
+  @@index([eventType])
+  @@index([funnelStage])
+  @@index([followers])
+  @@index([watchTime])
+  @@map("tiktok_events")
+}
+
 enum FunnelStage {
   top
   bottom
@@ -97,4 +126,24 @@ enum Browser {
   safari
 
   @@map("browser")
+}
+
+enum TiktokEventType {
+  videoView    @map("video_view")
+  like         @map("page_like")
+  share
+  comment
+  profileVisit @map("profile_visit")
+  purchase
+  follow
+
+  @@map("tiktok_event_type")
+}
+
+enum TiktokDevice {
+  android
+  ios
+  desktop
+
+  @@map("tiktok_device")
 }
