@@ -11,6 +11,7 @@ RUN npm ci
 
 WORKDIR /app/common/database
 RUN npx prisma generate
+RUN npm run build
 
 WORKDIR /app/common/types
 RUN npm run build
