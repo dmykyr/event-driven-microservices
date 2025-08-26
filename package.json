@@ -9,16 +9,23 @@
   "scripts": {
     "build": "npm run build --workspaces",
     "test": "npm run test --workspaces",
+    "build:dependency-packages": "npm run build:logger && npm run build:types",
+
     "dev:types": "npm run dev --workspace=@event-driven-microservices/types",
     "build:types": "npm run build --workspace=@event-driven-microservices/types",
+
+    "build:logger": "npm run build --workspace=@event-driven-microservices/logger",
+    "dev:logger": "npm run dev --workspace=@event-driven-microservices/logger",
+
     "start:reporter": "npm run start:dev --workspace=reporter",
     "start:gateway": "npm run start:dev --workspace=gateway",
     "start:fb-collector": "npm run start:dev --workspace=facebook-collector",
     "start:ttk-collector": "npm run start:dev --workspace=tiktok-collector",
-    "build:logger": "npm run build --workspace=@event-driven-microservices/logger",
-    "dev:logger": "npm run dev --workspace=@event-driven-microservices/logger",
-    "start:all": "concurrently \"npm run start:gateway\" \"npm run start:reporter\" \"npm run start:fb-collector\" \"npm run start:ttk-collector\" --names \"GATEWAY,REPORTER,FB-COLLECTOR,TT-COLLECTOR\"",
-    "dev:all": "npm run start:all"
+
+    "db:generate": "npm run generate --workspace=@event-driven-microservices/database",
+
+    "setup": "npm install && npm run db:generate && npm run build:dependency-packages",
+    "start:all": "npm run setup && concurrently \"npm run start:gateway\" \"npm run start:reporter\" \"npm run start:fb-collector\" \"npm run start:ttk-collector\" --names \"GATEWAY,REPORTER,FB-COLLECTOR,TT-COLLECTOR\""
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

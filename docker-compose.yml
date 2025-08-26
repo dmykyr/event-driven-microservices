@@ -55,6 +55,7 @@ services:
       - PORT=${FB_COLLECTOR_PORT}
       - DATABASE_URL=${DATABASE_URL}
       - NATS_SERVERS=${NATS_SERVERS}
+      - NATS_NKEY_SEED=${NATS_NKEY_SEED}
     depends_on:
       postgres:
         condition: service_healthy
@@ -78,6 +79,7 @@ services:
       - PORT=${TTK_COLLECTOR_PORT}
       - DATABASE_URL=${DATABASE_URL}
       - NATS_SERVERS=${NATS_SERVERS}
+      - NATS_NKEY_SEED=${NATS_NKEY_SEED}
     depends_on:
       postgres:
         condition: service_healthy
@@ -100,6 +102,7 @@ services:
     environment:
       - PORT=${GATEWAY_PORT}
       - NATS_SERVERS=${NATS_SERVERS}
+      - NATS_NKEY_SEED=${NATS_NKEY_SEED}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:${GATEWAY_PORT}/health"]
       interval: 10s
